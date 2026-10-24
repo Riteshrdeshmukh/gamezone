@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Games · GameZone{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>Games</h1>
+  <p class="lead">Everything installed on our stations right now.</p>
+  <div class="filters" role="group" aria-label="Filter by platform">
+    <button type="button" data-platform="all" aria-pressed="true">All</button>
+    {% for p in platforms %}<button type="button" data-platform="{{ p.platform }}" aria-pressed="false">{{ p.platform }}</button>{% endfor %}
+  </div>
+  <div class="grid">
+    {% for g in games %}
+      <article class="game" data-platform="{{ g.platform }}">
+        <span class="tag">{{ g.platform }}</span>
+        <h3>{{ g.title }}</h3>
+        <p class="muted">{{ g.genre }}</p>
+        <p>{{ g.description }}</p>
+      </article>
+    {% else %}
+      <p>No games added yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

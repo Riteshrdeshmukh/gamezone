@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Book a station · GameZone{% endblock %}
+{% block content %}
+<section class="section split">
+  <div>
+    <h1>Book a station</h1>
+    <form id="booking-form" method="post" novalidate>
+      <p id="form-error" class="flash error" role="alert" hidden></p>
+      <label>Your name
+        <input type="text" name="name" value="{{ form.get('name', '') }}" required maxlength="100" autocomplete="name">
+      </label>
+      <div class="row">
+        <label>Phone (10 digits)
+          <input type="tel" name="phone" value="{{ form.get('phone', '') }}" required inputmode="numeric" maxlength="10" autocomplete="tel">
+        </label>
+        <label>Email (optional)
+          <input type="email" name="email" value="{{ form.get('email', '') }}" autocomplete="email">
+        </label>
+      </div>
+      <label>Platform
+        <select name="pricing_id" required>
+          {% for p in plans %}
+            <option value="{{ p.id }}" data-price="{{ '%d'|format(p.price_per_hour) }}" {% if form.get('pricing_id')|int == p.id %}selected{% endif %}>
+              {{ p.platform }} (₹{{ '%d'|format(p.price_per_hour) }}/hour)
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+      <div class="row">
+        <label>Date
+          <input type="date" name="play_date" value="{{ form.get('play_date', '') }}" min="{{ today }}" required>
+        </label>
+        <label>Start time
+          <input type="time" name="start_time" value="{{ form.get('start_time', '') }}" min="{{ '%02d:00'|format(open_hour) }}" max="{{ '%02d:00'|format(close_hour - 1) }}" step="1800" required>
+        </label>
+      </div>
+      <div class="row">
+        <label>Hours
+          <select name="hours">
+            {% for h in range(1, 7) %}<option value="{{ h }}" {% if form.get('hours')|int == h %}selected{% endif %}>{{ h }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Stations
+          <select name="stations">
+            {% for s in range(1, 5) %}<option value="{{ s }}" {% if form.get('stations')|int == s %}selected{% endif %}>{{ s }}</option>{% endfor %}
+          </select>
+        </label>
+      </div>
+      <p class="total">Estimated total <output id="total">₹0</output></p>
+      <button class="btn" type="submit">Send booking request</button>
+    </form>
+  </div>
+  <aside class="note">
+    <h2>Good to know</h2>
+    <p>Open daily {{ open_hour }}:00 to {{ close_hour }}:00. Sessions must end by closing time.</p>
+    <p>We call to confirm your booking. Pay at the counter when you arrive.</p>
+    <p>Booking for a group? Add one station per player.</p>
+  </aside>
+</section>
+{% endblock %}

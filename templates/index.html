@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section hero">
+  <div>
+    <h1>Pick a station. Bring your squad.</h1>
+    <p class="lead">PCs, consoles, VR and racing rigs by the hour. Reserve online and walk straight in.</p>
+    <p>
+      <a class="btn" href="{{ url_for('booking') }}">Book a station</a>
+      <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See prices</a>
+    </p>
+  </div>
+  <div class="floor" aria-label="Stations on the floor">
+    <h2>On the floor</h2>
+    {% for p in plans %}
+      <div class="floor-row">
+        <span>{{ p.platform }}</span>
+        <div class="seats" aria-hidden="true">{% for i in range(p.stations) %}<i style="--n:{{ loop.index }}"></i>{% endfor %}</div>
+        <b>{{ p.stations }}</b>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Now playing</h2>
+  <div class="grid">
+    {% for g in games %}
+      <article class="game">
+        <span class="tag">{{ g.platform }}</span>
+        <h3>{{ g.title }}</h3>
+        <p>{{ g.description }}</p>
+      </article>
+    {% endfor %}
+  </div>
+  <p><a href="{{ url_for('games') }}">Browse all games</a></p>
+</section>
+
+<section class="section">
+  <h2>Rates per hour per station</h2>
+  <ul class="rates">
+    {% for p in plans %}
+      <li><span>{{ p.platform }}</span> <b>₹{{ '%d'|format(p.price_per_hour) }}</b></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Contact · GameZone{% endblock %}
+{% block content %}
+<section class="section split">
+  <div>
+    <h1>Contact</h1>
+    <form method="post">
+      <label>Your name
+        <input type="text" name="name" value="{{ form.get('name', '') }}" required maxlength="100">
+      </label>
+      <label>Email
+        <input type="email" name="email" value="{{ form.get('email', '') }}" required>
+      </label>
+      <label>Message
+        <textarea name="message" rows="5" required minlength="10">{{ form.get('message', '') }}</textarea>
+      </label>
+      <button class="btn" type="submit">Send message</button>
+    </form>
+  </div>
+  <aside class="note">
+    <h2>Find us</h2>
+    <p>Your street address, City</p>
+    <p>+91 98765 43210</p>
+    <p>hello@gamezone.example</p>
+    <p>Open daily 10:00 to 23:00.</p>
+  </aside>
+</section>
+{% endblock %}

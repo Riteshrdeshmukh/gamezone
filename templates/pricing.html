@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Pricing · GameZone{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>Pricing</h1>
+  <p class="lead">Pay per hour, per station. Pay at the counter when you arrive.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Platform</th><th>What you get</th><th>Stations</th><th>Per hour</th><th></th></tr></thead>
+      <tbody>
+        {% for p in plans %}
+          <tr>
+            <td><strong>{{ p.platform }}</strong></td>
+            <td>{{ p.description }}</td>
+            <td>{{ p.stations }}</td>
+            <td class="price">₹{{ '%d'|format(p.price_per_hour) }}</td>
+            <td><a class="btn btn-small" href="{{ url_for('booking', pricing_id=p.id) }}">Book {{ p.platform }}</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · GameZone{% endblock %}
+{% block content %}
+<section class="section">
+  <h1>Dashboard</h1>
+  <div class="stats">
+    <p><b>{{ stats.pending }}</b> pending bookings</p>
+    <p><b>{{ stats.today }}</b> bookings today</p>
+    <p><b>₹{{ '%d'|format(stats.revenue) }}</b> confirmed revenue</p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Bookings</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Customer</th><th>Platform</th><th>When</th><th>Total</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        {% for b in bookings %}
+          <tr>
+            <td>{{ b.id }}</td>
+            <td>{{ b.customer_name }}<br><span class="muted">{{ b.phone }}</span></td>
+            <td>{{ b.platform }} × {{ b.stations }}</td>
+            <td>{{ b.play_date.strftime('%d %b %Y') }}<br><span class="muted">{{ b.start_time.strftime('%H:%M') }} for {{ b.hours }}h</span></td>
+            <td class="price">₹{{ '%d'|format(b.total_price) }}</td>
+            <td><span class="status {{ b.status }}">{{ b.status }}</span></td>
+            <td class="actions">
+              {% if b.status != 'confirmed' %}
+                <form method="post" action="{{ url_for('booking_status', booking_id=b.id, status='confirmed') }}"><button class="btn btn-small" type="submit">Confirm</button></form>
+              {% endif %}
+              {% if b.status != 'cancelled' %}
+                <form method="post" action="{{ url_for('booking_status', booking_id=b.id, status='cancelled') }}" data-confirm="Cancel booking #{{ b.id }}?"><button class="btn btn-small btn-ghost" type="submit">Cancel</button></form>
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="7">No bookings yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <h2>Messages</h2>
+  {% for m in messages %}
+    <article class="message">
+      <p><strong>{{ m.name }}</strong> · <a href="mailto:{{ m.email }}">{{ m.email }}</a> · <span class="muted">{{ m.created_at.strftime('%d %b %Y, %H:%M') }}</span></p>
+      <p>{{ m.message }}</p>
+    </article>
+  {% else %}
+    <p>No messages yet.</p>
+  {% endfor %}
+</section>
+
+<section class="section">
+  <h2>Games</h2>
+  <form class="row add-game" method="post" action="{{ url_for('add_game') }}">
+    <label>Title <input type="text" name="title" required maxlength="100"></label>
+    <label>Platform
+      <select name="platform">{% for p in platforms %}<option>{{ p.platform }}</option>{% endfor %}</select>
+    </label>
+    <label>Genre <input type="text" name="genre" required maxlength="40"></label>
+    <label>Description <input type="text" name="description" required></label>
+    <button class="btn" type="submit">Add game</button>
+  </form>
+  <ul class="game-list">
+    {% for g in games %}
+      <li>
+        <span>{{ g.title }} <span class="muted">{{ g.platform }}</span></span>
+        <form method="post" action="{{ url_for('delete_game', game_id=g.id) }}" data-confirm="Remove {{ g.title }}?"><button class="btn btn-small btn-ghost" type="submit">Remove</button></form>
+      </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endblock %}
